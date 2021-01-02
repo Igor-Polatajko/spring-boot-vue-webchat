@@ -47,9 +47,9 @@
          class="position-fixed rounded m-4 bg-info p-4 col-md-4 overflow-scroll participants-list">
         <div @click="toggleShowParticipants" class="btn btn-primary btn-sm mb-2">>></div>
         <div class="fw-bold">Online:</div>
-        <ul v-for="participant in participants">
-            <li>{{ participant.username }}</li>
-        </ul>
+        <div v-for="participant in participants">
+            <div class="list-group-item">{{ participant.username }}</div>
+        </div>
     </div>
     <div class="col-md-10 mx-auto bg-light h-100">
         <div class="messages-block">
@@ -80,14 +80,7 @@
         el: '#app',
         data: {
             messages: [],
-            participants: [
-                {
-                    username: "Ihor",
-                },
-                {
-                    username: "Somebody"
-                }
-            ],
+            participants: [],
             showParticipants: false,
             inputMessage: ''
         },
@@ -101,6 +94,9 @@
                 console.log("connected: " + frame);
                 stompClient.subscribe('/chat/messages', function (response) {
                     vm.messages.push(JSON.parse(response.body));
+                });
+                stompClient.subscribe('/chat/participants', function (response) {
+                    vm.participants = JSON.parse(response.body);
                 });
             });
         },

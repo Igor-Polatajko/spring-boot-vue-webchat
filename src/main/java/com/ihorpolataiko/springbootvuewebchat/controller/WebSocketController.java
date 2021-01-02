@@ -11,9 +11,6 @@ import org.springframework.stereotype.Controller;
 import static com.ihorpolataiko.springbootvuewebchat.util.Constants.USERNAME;
 import static java.util.Objects.isNull;
 
-// ToDo implement notification of new joins
-// ToDo implement list of current participants
-// ToDo optionally, implement couple of chats
 @Controller
 public class WebSocketController {
 
