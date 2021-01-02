@@ -4,10 +4,9 @@ import com.ihorpolataiko.springbootvuewebchat.dto.IncomingMessage;
 import com.ihorpolataiko.springbootvuewebchat.dto.OutgoingMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Controller;
-
-import javax.servlet.http.HttpServletRequest;
 
 import static com.ihorpolataiko.springbootvuewebchat.util.Constants.USERNAME;
 import static java.util.Objects.isNull;
@@ -22,9 +21,9 @@ public class WebSocketController {
     }
 
     @MessageMapping("/message")
-    public void handleMessage(IncomingMessage incomingMessage) {
+    public void handleMessage(IncomingMessage incomingMessage, SimpMessageHeaderAccessor headerAccessor) {
 
-        Object senderAttribute = "Sender"; // ToDo use value from session
+        Object senderAttribute = headerAccessor.getSessionAttributes().get(USERNAME);
         if (isNull(senderAttribute)) {
             return;
         }
