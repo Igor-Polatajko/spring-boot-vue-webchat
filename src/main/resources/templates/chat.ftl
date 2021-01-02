@@ -52,7 +52,7 @@
         </div>
     </div>
     <div class="col-md-10 mx-auto bg-light h-100">
-        <div class="messages-block">
+        <div ref="messagesContainer" class="messages-block">
             <div v-for="message in messages" class="m-3 py-2 px-4 bg-white text-wrap text-break rounded">
                 <div class="fw-bold"> {{ message.sender }}</div>
                 <div>
@@ -105,6 +105,10 @@
                     vm.participants = JSON.parse(response.body);
                 });
             });
+        },
+        updated: function() {
+            const messagesContainer = this.$refs.messagesContainer;
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
         },
         methods: {
             sendMessage: function () {
