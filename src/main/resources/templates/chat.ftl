@@ -22,7 +22,10 @@
             overflow-x: hidden;
             overflow-y: scroll;
             height: 80%;
-            scrollbar-
+        }
+
+        .participants-list {
+            right: 0;
         }
 
         ::-webkit-scrollbar {
@@ -34,15 +37,25 @@
             visibility: hidden
         }
     </style>
-
 </head>
 <body class="h-100">
 <div id="app" class="h-100" v-cloak>
-    <div class="col-md-8 mx-auto bg-light h-100">
+    <div v-if="!showParticipants" class="position-fixed m-4 participants-list">
+        <div @click="toggleShowParticipants" class="btn btn-primary btn-sm"><<</div>
+    </div>
+    <div v-if="showParticipants"
+         class="position-fixed rounded m-4 bg-info p-4 col-md-4 overflow-scroll participants-list">
+        <div @click="toggleShowParticipants" class="btn btn-primary btn-sm mb-2">>></div>
+        <div class="fw-bold">Online:</div>
+        <ul v-for="participant in participants">
+            <li>{{ participant.username }}</li>
+        </ul>
+    </div>
+    <div class="col-md-10 mx-auto bg-light h-100">
         <div class="messages-block">
-            <div v-for="message in messages" class="ml-4 m-3 py-2 px-4 bg-white text-wrap text-break rounded">
+            <div v-for="message in messages" class="m-3 py-2 px-4 bg-white text-wrap text-break rounded">
                 <div class="fw-bold"> {{ message.sender }}</div>
-                <div class="pl-4">
+                <div>
                     {{ message.content }}
                 </div>
             </div>
@@ -53,9 +66,7 @@
                        placeholder="Type here...">
             </div>
             <div class="d-grid gap-2 col-6 mx-auto">
-                <button @click="sendMessage" type="submit"
-                        class="btn btn-primary btn-block">Send
-                </button>
+                <div @click="sendMessage" class="btn btn-primary btn-lg">Send</div>
             </div>
         </div>
     </div>
@@ -69,6 +80,15 @@
         el: '#app',
         data: {
             messages: [],
+            participants: [
+                {
+                    username: "Ihor",
+                },
+                {
+                    username: "Somebody"
+                }
+            ],
+            showParticipants: false,
             inputMessage: ''
         },
         mounted: function () {
@@ -93,6 +113,9 @@
 
                 stompClient.send("/app/message", {}, JSON.stringify({'content': this.inputMessage}));
                 this.inputMessage = '';
+            },
+            toggleShowParticipants: function () {
+                this.showParticipants = !this.showParticipants;
             }
         }
     })
