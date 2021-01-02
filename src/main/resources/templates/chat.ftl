@@ -94,6 +94,12 @@
                 console.log("connected: " + frame);
                 stompClient.subscribe('/chat/messages', function (response) {
                     vm.messages.push(JSON.parse(response.body));
+
+                    const MESSAGES_LIMIT = 1000;
+                    if (vm.messages.length > MESSAGES_LIMIT) {
+                        vm.messages = vm.messages.slice(-MESSAGES_LIMIT);
+                    }
+
                 });
                 stompClient.subscribe('/chat/participants', function (response) {
                     vm.participants = JSON.parse(response.body);
