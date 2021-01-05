@@ -90,14 +90,15 @@
 
             let vm = this;
 
+            const SHOW_MESSAGES_LIMIT = 1000;
+
             stompClient.connect({}, function (frame) {
                 console.log("connected: " + frame);
                 stompClient.subscribe('/chat/messages', function (response) {
                     vm.messages.push(JSON.parse(response.body));
 
-                    const MESSAGES_LIMIT = 1000;
-                    if (vm.messages.length > MESSAGES_LIMIT) {
-                        vm.messages = vm.messages.slice(-MESSAGES_LIMIT);
+                    if (vm.messages.length > SHOW_MESSAGES_LIMIT) {
+                        vm.messages = vm.messages.slice(-SHOW_MESSAGES_LIMIT);
                     }
 
                 });
@@ -106,7 +107,7 @@
                 });
             });
         },
-        updated: function() {
+        updated: function () {
             const messagesContainer = this.$refs.messagesContainer;
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         },
