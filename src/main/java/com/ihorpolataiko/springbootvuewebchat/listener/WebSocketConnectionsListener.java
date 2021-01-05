@@ -19,6 +19,8 @@ import static com.ihorpolataiko.springbootvuewebchat.util.Constants.USERNAME;
 @Slf4j
 public class WebSocketConnectionsListener {
 
+    private static final String CHAT_PARTICIPANTS_DESTINATION = "/chat/participants";
+
     private Map<String, Participant> currentConnections = new ConcurrentHashMap<>();
 
     private SimpMessageSendingOperations messagingTemplate;
@@ -34,13 +36,13 @@ public class WebSocketConnectionsListener {
         log.info("Received a new web socket subscription. sessionId: {}, destination: {}",
                 headerAccessor.getSessionId(), headerAccessor.getDestination());
 
-        if (StringUtils.equals("/chat/messages", headerAccessor.getDestination())) {
+        if (StringUtils.equals(CHAT_PARTICIPANTS_DESTINATION, headerAccessor.getDestination())) {
 
             String username = (String) headerAccessor.getSessionAttributes().get(USERNAME);
             currentConnections.put(headerAccessor.getSessionId(), Participant.builder().username(username).build());
-        }
 
-        messagingTemplate.convertAndSend("/chat/participants", currentConnections.values());
+            messagingTemplate.convertAndSend(CHAT_PARTICIPANTS_DESTINATION, currentConnections.values());
+        }
 
     }
 
@@ -52,7 +54,7 @@ public class WebSocketConnectionsListener {
 
         currentConnections.remove(headerAccessor.getSessionId());
 
-        messagingTemplate.convertAndSend("/chat/participants", currentConnections.values());
+        messagingTemplate.convertAndSend(CHAT_PARTICIPANTS_DESTINATION, currentConnections.values());
     }
 
 }
